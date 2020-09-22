@@ -18,30 +18,30 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User addNewScore (Long id, int count) {
+    public User addNewScore(Long id, int count) {
         User user = userRepository.findById(id).get();
-        for (int i = 0; i <count; i++) {
+        for (int i = 0; i < count; i++) {
             user.getScores().add(1000);
         }
         userRepository.save(user);
         return user;
     }
 
-    public User deleteScore (Long id, int idScore) {
+    public User deleteScore(Long id, int idScore) {
         User user = userRepository.findById(id).get();
         user.getScores().remove(idScore);
         userRepository.save(user);
         return user;
     }
 
-    public User swappingScore (Long id, int idScorelast, int idScoreNew, int sum ) {
+    public User swappingScore(Long id, int idScorelast, int idScoreNew, int sum) {
         User user = userRepository.findById(id).get();
-      Integer idScoreLastSum =  user.getScores().get(idScorelast) - sum;
+        Integer idScoreLastSum = user.getScores().get(idScorelast) - sum;
         user.getScores().remove(idScorelast);
-        user.getScores().add(idScorelast,idScoreLastSum );
-        Integer idScoreNewSum =  user.getScores().get(idScoreNew) + sum;
+        user.getScores().add(idScorelast, idScoreLastSum);
+        Integer idScoreNewSum = user.getScores().get(idScoreNew) + sum;
         user.getScores().remove(idScoreNew);
-        user.getScores().add(idScoreNew,idScoreNewSum );
+        user.getScores().add(idScoreNew, idScoreNewSum);
         userRepository.save(user);
         return user;
     }
@@ -52,11 +52,21 @@ public class UserService {
 
     public boolean deleteById(Long id) {
         boolean result = userRepository.existsById(id);
-         if(result) userRepository.deleteById(id);
-      return result;
+        if (result) {
+            userRepository.deleteById(id);
+        }
+        return result;
     }
 
     public boolean existsById(Long id) {
         return userRepository.existsById(id);
+    }
+
+    public boolean validIdScore(Long id, int idScore) {
+        User user = userRepository.findById(id).get();
+        if (idScore > 1 && idScore < user.getScores().size()) {
+            return true;
+        }
+        return false;
     }
 }
