@@ -19,7 +19,7 @@ public class UserController {
     }
 
     @GetMapping
-    public String getAllUsers( Model model) {
+    public String getAllUsers(Model model) {
         model.addAttribute("userList", userService.findAll());
         return "users";
     }
@@ -48,13 +48,13 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public String deleteUserFromIdPost(Long id,Model model) {
+    public String deleteUserFromIdPost(Long id, Model model) {
         boolean deleteById = userService.deleteById(id);
         if (deleteById) {
-            return  "redirect:/users";
+            return "redirect:/users";
         }
         model.addAttribute("errorMessage", "Sorry, we don't have user with this id");
-        return  "delete";
+        return "delete";
     }
 
     @GetMapping("/delete")
@@ -64,7 +64,6 @@ public class UserController {
         return "delete";
     }
 
-
     @GetMapping("/create-new-score")
     public String createNewScoreGet(Model model) {
         User user = new User();
@@ -73,13 +72,13 @@ public class UserController {
     }
 
     @PostMapping("/create-new-score")
-    public String createNewScorePost(@RequestParam Long id,@RequestParam int count, Model model) {
+    public String createNewScorePost(@RequestParam Long id, @RequestParam int count, Model model) {
         if (userService.existsById(id)) {
             userService.addNewScore(id, count);
             return "redirect:/users";
         }
         model.addAttribute("errorMessage", "Sorry, we don't have user with this id");
-        return  "createNewScore";
+        return "createNewScore";
     }
 
     @GetMapping("/delete-score")
@@ -91,12 +90,16 @@ public class UserController {
 
     @PostMapping("/delete-score")
     public String deleteScorePost(@RequestParam Long id, @RequestParam int idScore, Model model) {
-       if (userService.existsById(id)) {
-           userService.deleteScore(id, idScore - 1);
-           return "redirect:/users";
-       }
+        if (userService.existsById(id)) {
+            if (userService.validIdScore(id, idScore)) {
+                userService.deleteScore(id, idScore - 1);
+                return "redirect:/users";
+            }
+            model.addAttribute("errorMessage", "Sorry, we don't have userScore with this id");
+            return "deleteScore";
+        }
         model.addAttribute("errorMessage", "Sorry, we don't have user with this id");
-        return  "deleteScore";
+        return "deleteScore";
     }
 
     @GetMapping("/swap-score")
@@ -105,13 +108,23 @@ public class UserController {
         model.addAttribute("user", user);
         return "swapScore";
     }
+
     @PostMapping("/swap-score")
-    public String swapScorePost(@RequestParam Long id, @RequestParam int idScore1, @RequestParam int idScore2, @RequestParam int sum, Model model) {
+    public String swapScorePost(@RequestParam Long id,
+                                @RequestParam int idScore1,
+                                @RequestParam int idScore2,
+                                @RequestParam int sum,
+                                Model model) {
         if (userService.existsById(id)) {
-            userService.swappingScore(id, idScore1 - 1, idScore2 - 1, sum);
-            return "redirect:/users";
+            if (userService.validIdScore(id, idScore1) && userService.validIdScore(id, idScore2)) {
+                userService.swappingScore(id, idScore1 - 1, idScore2 - 1, sum);
+                return "redirect:/users";
+            }
+            model.addAttribute("errorMessage",
+                    "Sorry, we don't have one or two of userScores with these id");
+            return "swapScore";
         }
         model.addAttribute("errorMessage", "Sorry, we don't have user with this id");
-        return  "swapScore";
+        return "swapScore";
     }
 }
