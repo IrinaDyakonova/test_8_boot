@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Score</title>
+</head>
+<body>
+<h2 align="center">Create New Score from User by id</h2>
+<form th:action="@{/users/create-new-score}" method="post">
+    <div><label> User id : <input type="number" name="id"/> </label></div>
+    <div><label> Count new score : <input type="number" name="count"/> </label></div>
+
+    <div><input type="submit" value="Ok"/></div>
+</form>
+<div th:if="${errorMessage}" th:utext="${errorMessage}"
+     style="color:#de0a11;font-style:italic;">
+</div>
+<br>
+<a href="/menu/" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Menu</a>
+</body>
+</html>
